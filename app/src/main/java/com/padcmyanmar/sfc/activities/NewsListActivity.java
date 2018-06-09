@@ -1,7 +1,10 @@
 package com.padcmyanmar.sfc.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +21,8 @@ import com.padcmyanmar.sfc.adapters.NewsAdapter;
 import com.padcmyanmar.sfc.components.EmptyViewPod;
 import com.padcmyanmar.sfc.components.SmartRecyclerView;
 import com.padcmyanmar.sfc.components.SmartScrollListener;
+import com.padcmyanmar.sfc.data.models.NewsModel;
+import com.padcmyanmar.sfc.data.vo.NewsVO;
 import com.padcmyanmar.sfc.delegates.NewsItemDelegate;
 import com.padcmyanmar.sfc.events.RestApiEvents;
 import com.padcmyanmar.sfc.events.TapNewsEvent;
@@ -27,6 +32,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +52,7 @@ public class NewsListActivity extends BaseActivity
     private SmartScrollListener mSmartScrollListener;
 
     private NewsAdapter mNewsAdapter;
+    private NewsModel mNewsModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +83,23 @@ public class NewsListActivity extends BaseActivity
                 Log.d(SFCNewsApp.LOG_TAG, "Today (with default format) : " + today.toString());
             }
         });
+//        mNewsModel = ViewModelProviders.of(this).get(NewsModel.class);
+//        mNewsModel.initDatabase(this);
+//        mNewsModel.getMMNews().observe(this, new Observer<List<NewsVO>>() {
+//            @Override
+//            public void onChanged(@Nullable List<NewsVO> newsVOS) {
+//                mNewsAdapter.setNewData(newsVOS);
+//            }
+//        });
+
+        mNewsModel = ViewModelProviders.of(this).get(NewsModel.class);
+        mNewsModel.initDatabase(this);
+        mNewsModel.getMMNews().observe(this, new Observer<List<NewsVO>>() {
+            @Override
+            public void onChanged(@Nullable List<NewsVO> newsVOS) {
+                mNewsAdapter.setNewData(newsVOS);
+            }
+        });
 
         rvNews.setEmptyView(vpEmptyNews);
         rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
@@ -89,8 +113,9 @@ public class NewsListActivity extends BaseActivity
                 //TODO load more data.
             }
         });
-
         rvNews.addOnScrollListener(mSmartScrollListener);
+
+
     }
 
     @Override
@@ -160,10 +185,10 @@ public class NewsListActivity extends BaseActivity
         startActivity(intent);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
-        mNewsAdapter.appendNewData(event.getLoadNews());
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
+//        mNewsAdapter.appendNewData(event.getLoadNews());
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onErrorInvokingAPI(RestApiEvents.ErrorInvokingAPIEvent event) {
