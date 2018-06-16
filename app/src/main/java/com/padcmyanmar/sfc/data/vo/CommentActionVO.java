@@ -16,9 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 
 @Entity(tableName = "CommentAction",
-        foreignKeys = @ForeignKey(entity = ActedUserVO.class,
-                parentColumns = "actedUserId",
-                childColumns = "userId"))
+        foreignKeys = {@ForeignKey(entity = NewsVO.class, parentColumns = "newsId", childColumns = "newsId"),
+                @ForeignKey(entity = ActedUserVO.class,
+                        parentColumns = "actedUserId",
+                        childColumns = "userId")})
 
 public class CommentActionVO {
 
@@ -37,9 +38,13 @@ public class CommentActionVO {
     @ColumnInfo(name = "userId")
     private String userId;
 
+    @ColumnInfo(name = "newsId")
+    private String newsId;
+
     @Ignore
     @SerializedName("acted-user")
     private ActedUserVO actedUser;
+
 
     @NotNull
     public String getCommentId() {
@@ -80,5 +85,13 @@ public class CommentActionVO {
 
     public void setActedUser(ActedUserVO actedUser) {
         this.actedUser = actedUser;
+    }
+
+    public String getNewsId() {
+        return newsId;
+    }
+
+    public void setNewsId(String newsId) {
+        this.newsId = newsId;
     }
 }

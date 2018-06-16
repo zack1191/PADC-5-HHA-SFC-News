@@ -6,26 +6,26 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import com.padcmyanmar.sfc.data.vo.ActedUserVO;
 import com.padcmyanmar.sfc.data.vo.NewsVO;
 
 import java.util.List;
 
 /**
- * Created by E5 on 6/6/2018.
+ * Created by E5 on 6/9/2018.
  */
 @Dao
-public interface NewsDao extends BaseDao<NewsVO>{
+public interface ActedUserDao extends BaseDao<ActedUserVO> {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertNew(NewsVO newsVO);
+    long insertActedUser(ActedUserVO data);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long[] insertNews(NewsVO... newsVOS);
+    long[] insertActedUsers(ActedUserVO... actedUserVOS);
 
-    @Query("SELECT * FROM News")
-    List<NewsVO> getAllNews();
+    @Query("SELECT * FROM ActedUser")
+    List<ActedUserVO> getActedUser();
 
-    @Query("DELETE FROM News")
+    @Query("DELETE FROM ActedUser")
     void deleteAll();
-
 }

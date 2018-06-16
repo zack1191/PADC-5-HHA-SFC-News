@@ -18,9 +18,8 @@ import java.util.List;
 
 
 @Entity(tableName = "News",
-        foreignKeys = @ForeignKey(entity = PublicationVO.class,
-                parentColumns = "publicationId",
-                childColumns = "publication_id"))
+        foreignKeys =
+        @ForeignKey(entity = PublicationVO.class, parentColumns = "publicationId", childColumns = "publication_id"))
 
 public class NewsVO {
 

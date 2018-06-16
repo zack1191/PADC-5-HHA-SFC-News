@@ -7,6 +7,7 @@ import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.padcmyanmar.sfc.data.vo.ActedUserVO;
 import com.padcmyanmar.sfc.data.vo.CommentActionVO;
@@ -29,6 +30,16 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract NewsDao newsDao();
 
+    public abstract PublicationDao publicationDao();
+
+    public abstract ActedUserDao actedUserDao();
+
+    public abstract CommentDao commentDao();
+
+    public abstract FavouriteDao favouriteDao();
+
+
+    @NonNull
     public static AppDatabase getNewsDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DB_NAME)

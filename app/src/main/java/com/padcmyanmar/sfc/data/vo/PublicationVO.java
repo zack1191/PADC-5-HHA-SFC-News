@@ -3,6 +3,7 @@ package com.padcmyanmar.sfc.data.vo;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 

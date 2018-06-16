@@ -36,6 +36,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 public class NewsListActivity extends BaseActivity
         implements NewsItemDelegate {
@@ -92,14 +94,17 @@ public class NewsListActivity extends BaseActivity
 //            }
 //        });
 
-        mNewsModel = ViewModelProviders.of(this).get(NewsModel.class);
-        mNewsModel.initDatabase(this);
-        mNewsModel.getMMNews().observe(this, new Observer<List<NewsVO>>() {
-            @Override
-            public void onChanged(@Nullable List<NewsVO> newsVOS) {
-                mNewsAdapter.setNewData(newsVOS);
-            }
-        });
+//        mNewsModel = ViewModelProviders.of(this).get(NewsModel.class);
+//        mNewsModel.initDatabase(this);
+//        mNewsModel.getMMNews().observe(this, new Observer<List<NewsVO>>() {
+//            @Override
+//            public void onChanged(@Nullable List<NewsVO> newsVOS) {
+//                mNewsAdapter.setNewData(newsVOS);
+//            }
+//        });
+        mNewsModel = NewsModel.getInstance();
+        mNewsModel.initialDatabase(getApplicationContext());
+
 
         rvNews.setEmptyView(vpEmptyNews);
         rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
@@ -115,6 +120,28 @@ public class NewsListActivity extends BaseActivity
         });
         rvNews.addOnScrollListener(mSmartScrollListener);
 
+        PublishSubject<List<NewsVO>> mPublishSubject = NewsModel.getInstance().getNewsFromNetwork();
+        mPublishSubject.subscribe(new io.reactivex.Observer<List<NewsVO>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(List<NewsVO> newsVOS) {
+                mNewsAdapter.appendNewData(newsVOS);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(SFCNewsApp.LOG_TAG, "onError : " + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(SFCNewsApp.LOG_TAG, "onComplete : ");
+            }
+        });
 
     }
 
@@ -180,9 +207,9 @@ public class NewsListActivity extends BaseActivity
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTapNewsEvent(TapNewsEvent event) {
-        event.getNewsId();
-        Intent intent = NewsDetailsActivity.newIntent(getApplicationContext());
-        startActivity(intent);
+//        event.getNewsId();
+//        Intent intent = NewsDetailsActivity.newIntent(getApplicationContext());
+//        startActivity(intent);
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)
