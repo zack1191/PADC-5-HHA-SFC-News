@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.padcmyanmar.sfc.R;
 import com.padcmyanmar.sfc.SFCNewsApp;
@@ -33,10 +34,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 public class NewsListActivity extends BaseActivity
@@ -129,7 +134,9 @@ public class NewsListActivity extends BaseActivity
 
             @Override
             public void onNext(List<NewsVO> newsVOS) {
+
                 mNewsAdapter.appendNewData(newsVOS);
+                processPrimeNumber();
             }
 
             @Override
@@ -221,5 +228,62 @@ public class NewsListActivity extends BaseActivity
     public void onErrorInvokingAPI(RestApiEvents.ErrorInvokingAPIEvent event) {
         Snackbar.make(rvNews, event.getErrorMsg(), Snackbar.LENGTH_INDEFINITE).show();
     }
+
+
+    private void processPrimeNumber() {
+        Observable<String> primeNumber = Observable.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                int[] numbers = {2, 5, 7, 11, 14, 17, 18};
+                return calculatePrime(numbers);
+            }
+        });
+        primeNumber
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new io.reactivex.Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Toast.makeText(getApplicationContext(), "Prime Numbers =" + s, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private String calculatePrime(int... numbers) {
+        String primeNumber = "";
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == 2 || isPrime(numbers[i])) {
+                primeNumber = primeNumber + numbers[i] + ",";
+            }
+
+        }
+        return primeNumber;
+    }
+
+    private boolean isPrime(int number) {
+        for (int i = 2; i < number; i++) {
+            if (number % i == 0) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
 
 }
