@@ -1,6 +1,7 @@
 package com.padcmyanmar.sfc.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.padcmyanmar.sfc.R;
 import com.padcmyanmar.sfc.adapters.NewUiNewsAdapter;
@@ -53,10 +56,18 @@ public class NewUiNewsListActivity extends BaseActivity implements NewsListView 
 
         Toolbar toolbar = findViewById(R.id.toolbar_news_ui);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         rvUiNews.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, GridLayoutManager.VERTICAL, false));
         mNewUiNewsAdapter = new NewUiNewsAdapter(getApplicationContext(), mNewsListPresenter);
         rvUiNews.setAdapter(mNewUiNewsAdapter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
 
     }
 
